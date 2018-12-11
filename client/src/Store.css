@@ -1,4 +1,4 @@
-.App {
+.Store {
   text-align: center;
   background-color: #282c34;
   min-height: 50%;
@@ -11,12 +11,7 @@
   padding-bottom: 10px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
+.Store-header {
   background-color: #282c3d;
   min-height: 50%;
   display: flex;
@@ -26,28 +21,4 @@
   font-size: calc(10px + 2vmin);
   color: white;
   padding-bottom: 10px;
-}
-
-.InvRow{
-  background-color: #aaa;
-  color: black;
-  padding-right: 13px;
-  padding-left: 13px;
-  border-style: solid;
-  border-width: 5px;
-  border-collapse: separate;
-  border-spacing: 5px;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
