@@ -20,7 +20,7 @@ class Store extends Component {
 
   componentDidMount() {
     this.getItems()
-      .then(res => this.setState({ response: JSON.parse(res).inventory }))
+      .then(res => this.setState({ inventory: JSON.parse(res).inventory }))
       .catch(err => console.log(err));
   }
 
@@ -55,11 +55,13 @@ class Store extends Component {
       headers: {'Content-Type':'application/json'},
       body: '{ "id": "5566", "name": "Lucius", "description":"Not a great guy tbh", "timeAdded":"CURRENT_TIMESTAMP+1"}'
     });
+    const body = await response.text();
 
-    if (response.status !==200) throw Error(response.body);
-
-    this.setState({ inventoryID: this.props.inventoryID+1  });
-
+    if (response.status !==200){
+     throw Error(response.body);
+    } else {
+      this.setState({ inventory: JSON.parse(body).inventory })
+    } 
   }
   
 
@@ -92,11 +94,10 @@ class Store extends Component {
             </p> 
           </form>
 
-          <div className="Inventory-Grid">
+          <div className="Inventory-Grid" key={this.state.inventoryID}>
           <Inventory 
-            key={this.state.inventoryID}
             resp={this.state.responseToPost}
-            inventory={this.state.response}
+            inventory={this.state.inventory}
           />
          </div>
          </div>

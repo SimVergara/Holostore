@@ -77,6 +77,7 @@ app.get('/api/items', (req, res) => {
 });
 
 app.post('/api/items', (req, res) => {
+  console.log('responded to post items')
   inventory.push(req.body);
   res.send({inventory});
 })
