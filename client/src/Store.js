@@ -58,7 +58,7 @@ class Store extends Component {
 
     if (response.status !==200) throw Error(response.body);
 
-    this.setState({ inventoryID: 5  });
+    this.setState({ inventoryID: this.props.inventoryID+1  });
 
   }
   
