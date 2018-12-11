@@ -13,7 +13,8 @@ class Store extends Component {
       responseToPost: '',
       inventory : [{
         "name": "Loading inventory"
-      }]
+      }],
+      inventoryID: 0,
     };
   }
 
@@ -54,9 +55,12 @@ class Store extends Component {
       headers: {'Content-Type':'application/json'},
       body: '{ "id": "5566", "name": "Lucius", "description":"Not a great guy tbh", "timeAdded":"CURRENT_TIMESTAMP+1"}'
     });
-    this.getItems();
-  }
 
+    if (response.status !==200) throw Error(response.body);
+
+    this.setState({ inventoryID: 5  });
+
+  }
   
 
   render() {
@@ -90,6 +94,7 @@ class Store extends Component {
 
           <div className="Inventory-Grid">
           <Inventory 
+            key={this.state.inventoryID}
             resp={this.state.responseToPost}
             inventory={this.state.response}
           />

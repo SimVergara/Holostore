@@ -4,7 +4,7 @@ import './Inventory.css';
 
 function Hologram(props){
   return(
-      <td style={{width:'25%'}}>
+      <td style={{width:'25%'}}  className="InvRow">
         <p>{props.id || "ID"}</p>
         <h2>{props.name || "NAME"}</h2>
         <p>{props.description || "description"}</p>
@@ -39,14 +39,14 @@ class Inventory extends Component {
     for(var i=0; i<numRows; i++){
       rows.push(
         <tr key={i}>
-          {this.renderRow(props.inventory.slice((i*4+i),(i*4+i+4)))}
+          {this.renderRow(props.inventory.slice((i*4),(i*4+4)))}
         </tr>);
     };
     
     rows.push(<tr key={i+1}>{this.renderRow(props.inventory.slice(numItems - lastRow))}</tr>);
     
     return(
-      <tbody className="InvRow"> 
+      <tbody > 
           {rows}
       </tbody>
     );
@@ -56,7 +56,7 @@ class Inventory extends Component {
     return(
       <div>
         <p>{this.props.resp}</p>
-        <table style={{width:'100%'}}>
+        <table>
           {this.renderGrid(this.props)}
         </table>
       </div>

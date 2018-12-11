@@ -13,37 +13,37 @@ const db = mysql.createConnection({
 
 var inventory = [
   {
-    "id":'1234',
+    "id":'0001',
     "name":"Freddie Mercury",
     "description":"Another one bites the dust.",
     "timeAdded":"CURRENT_TIMESTAMP"
   },
   {
-    "id":'5678',
+    "id":'0002',
     "name":"Michael Jackson",
     "description":"Is Annie okay?",
     "timeAdded":"CURRENT_TIMESTAMP"
   },
   {
-    "id":'9012',
+    "id":'0003',
     "name":"Michelle Obama",
     "description":"Lady President",
     "timeAdded":"CURRENT_TIMESTAMP"
   },
   {
-    "id":'3456',
+    "id":'0004',
     "name":"Mozart",
     "description":"Total badass musician",
     "timeAdded":"CURRENT_TIMESTAMP"
   },
   {
-    "id":'7890',
+    "id":'0005',
     "name":"Tupac",
     "description":"Spokesperson for this app",
     "timeAdded":"CURRENT_TIMESTAMP"
   },
   {
-    "id":'0123',
+    "id":'0006',
     "name":"Shakespeare",
     "description":"2b || !2b ",
     "timeAdded":"CURRENT_TIMESTAMP"
