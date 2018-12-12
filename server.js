@@ -101,7 +101,7 @@ app.delete('/api/items/:id', (req, res) => {
     res.send('No items by that ID');
   } else {
     //Remove ID from inventory
-    inventory.splice(6, 1);
+    inventory.splice(results.i, 1);
     console.log(inventory);
     res.send({inventory});
   }

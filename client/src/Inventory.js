@@ -7,7 +7,7 @@ function Hologram(props){
     <div class={props.colsize}>
       <h3 >{props.id || "ID"}</h3>
       <h1>{props.name || "NAME"}</h1>
-      <h2>{props.description || "description"}</h2>
+      <p>{props.description || "description"}</p>
     </div>
     );
 }
@@ -17,7 +17,6 @@ class Inventory extends Component {
   renderGrid(props){
     return(
       props.inventory.map(function(item, i){
-        console.log('test');
         return(
           <Hologram 
             key={i}

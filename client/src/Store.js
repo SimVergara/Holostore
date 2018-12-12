@@ -10,35 +10,53 @@ class Store extends Component {
     this.state = {
       response: '',
       search: '',
+      searched: false,
       responseToPost: '0',
       inventory : [{
         "name": "Loading inventory"
       }],
-      inventoryID: 0,
+      newName: '',
+      newDesc: '',
+      deleteID: '',
     };
   }
 
   componentDidMount() {
-    this.getItems()
+    this.loadPage()
       .then(res => this.setState({ inventory: JSON.parse(res).inventory }))
       .catch(err => console.log(err));
   }
 
-  getItems = async () => {
+  loadPage = async () => {
     const response = await fetch('/api/items');
     const body = await response.text();
 
     if (response.status !== 200) throw Error(body.message);
 
-    // this.setState({ inventory: body });
+    this.setState({ inventory: JSON.parse(body).inventory });
     return body;
   }
 
-  handleSubmit = async e => {
+  clearSearch = async e => {
+    e.preventDefault();
+    const response = await fetch('/api/items');
+    const body = await response.text();
+
+    if (response.status !== 200) throw Error(body.message);
+
+    this.setState({
+      inventory: JSON.parse(body).inventory,
+      search: '',
+      searched: false,
+    });
+    return body;
+  }
+
+  handleSearch = async e => {
     e.preventDefault();
 
     //if it's a blank search then replace it with an empty array 
-    let searchString = JSON.stringify({ post: ( this.state.search === "" ? "[]" : JSON.parse(this.state.search) ) });
+    let searchString = JSON.stringify({ post: ( this.state.search === "" ? "[]" : this.state.search ) });
 
     const response = await fetch('/api/search', {
       method: 'POST',
@@ -49,7 +67,10 @@ class Store extends Component {
     });
     const body = await response.text();
 
-    this.setState({ responseToPost: body, inventory: JSON.parse(body).inventory });
+    this.setState({
+      inventory: JSON.parse(body).inventory,
+      searched: true,
+    });
   };
 
   addItem = async e => {
@@ -57,20 +78,30 @@ class Store extends Component {
     const response = await fetch('/api/items',{
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: '{ "id": "5566", "name": "Lucius", "description":"Not a great guy tbh", "timeAdded":"CURRENT_TIMESTAMP+1"}'
+      body: JSON.stringify({ 
+        "id": "5566", 
+        "name": this.state.newName, 
+        "description": this.state.newDesc, 
+        "timeAdded":"CURRENT_TIMESTAMP+1"
+      })
     });
     const body = await response.text();
 
     if (response.status !==200){
      throw Error(response.body);
     } else {
-      this.setState({ inventory: JSON.parse(body).inventory })
+      this.setState({ 
+        inventory: JSON.parse(body).inventory,
+        newName: '',
+        newDesc: '',
+      })
     } 
+
   }
 
   removeItems = async e => {
     e.preventDefault()
-    const response = await fetch('/api/items/5566',{
+    const response = await fetch(`/api/items/${this.state.deleteID}`,{
       method: 'DELETE'
     });
     const body = await response.text();
@@ -83,7 +114,10 @@ class Store extends Component {
     } else if (response.status !== 200) {
       throw Error(body.message);
     } else {
-      this.setState({ inventory: JSON.parse(body).inventory });
+      this.setState({ 
+        inventory: JSON.parse(body).inventory,
+        deleteID: '',
+      });
     }
   }
   
@@ -92,46 +126,63 @@ class Store extends Component {
     return (
       <div>
         <div className="Store-header">
-          <form onSubmit={this.handleSubmit}>
-            <p>
-              <strong>Holostore</strong>
+          <strong>Holostore</strong>
+          <form onSubmit={this.handleSearch}>
               <input
                 type="text"
                 value={this.state.search}
                 onChange={e => this.setState({ search: e.target.value })}
-                class="form-control"
               />
               <button class="btn btn-primary" type="submit">search</button>
-            </p>
           </form>
         </div>
         <div className="Store">
-          <form onSubmit={this.getItems}>
-            <p>
-              <button type="submit">Get Items</button>
-            </p>
-          </form>
+          <div className="Store-sidebar">
 
-          <form onSubmit={this.addItem}>
-            <p>
-              <button type="submit">Add Item</button>  
-            </p> 
-          </form>
+            <form onSubmit={this.addItem}>
+                <h1>Add Hologram</h1>
+                Name <br/>
+                <input
+                  type="text"
+                  value={this.state.newName}
+                  onChange={e => this.setState({ newName: e.target.value })}
+                />
+                <br/>
+                Description <br/>
+                <textarea
+                  type="text"
+                  value={this.state.newDesc}
+                  onChange={e => this.setState({ newDesc: e.target.value })}
+                />
+                <br/>
+                <button type="submit" disabled={!(this.state.newName && this.state.newDesc)}> + </button>  
+            </form>
+            <br/>
+            <form onSubmit={this.removeItems}>
+                <h1>Delete Hologram</h1>
+                ID <br/>
+                <input
+                  type="text"
+                  value={this.state.deleteID}
+                  onChange={e => this.setState({ deleteID: e.target.value })}
+                />
+                <br/>
+                <button type="submit" disabled={!(this.state.deleteID)}> X </button>  
+            </form>
+          </div>
 
-          <form onSubmit={this.removeItems}>
-            <p>
-              <button type="submit">Delete Item 5566</button>  
-            </p> 
-          </form>
+          <div class="container">
 
-          <div class="container" key={this.state.inventoryID}>
+            <form onSubmit={this.clearSearch}>
+              <p>
+                { (this.state.searched) && <button type="submit">Clear Search</button> }
+              </p>
+            </form>
             <Inventory 
-              key={this.state.responseToPost}
-              // resp={this.state.responseToPost}
               inventory={this.state.inventory}
             />
          </div>
-         </div>
+        </div>
       </div>
     );
   }
