@@ -10,7 +10,7 @@ class Store extends Component {
     this.state = {
       response: '',
       post: '',
-      responseToPost: '',
+      responseToPost: '0',
       inventory : [{
         "name": "Loading inventory"
       }],
@@ -36,16 +36,19 @@ class Store extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    const response = await fetch('/api/world', {
+
+    let searchString = JSON.stringify({ post: ( this.state.post === "" ? "[]" : JSON.parse(this.state.post) ) });
+
+    const response = await fetch('/api/search', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ post: this.state.post }),
+      body: searchString,
     });
     const body = await response.text();
 
-    this.setState({ responseToPost: body });
+    this.setState({ responseToPost: body, inventory: JSON.parse(body).inventory });
   };
 
   addItem = async e => {
@@ -76,8 +79,9 @@ class Store extends Component {
                 type="text"
                 value={this.state.post}
                 onChange={e => this.setState({ post: e.target.value })}
+                class="form-control"
               />
-              <button type="submit">search</button>
+              <button class="btn btn-primary" type="submit">search</button>
             </p>
           </form>
         </div>
@@ -94,11 +98,12 @@ class Store extends Component {
             </p> 
           </form>
 
-          <div className="Inventory-Grid" key={this.state.inventoryID}>
-          <Inventory 
-            resp={this.state.responseToPost}
-            inventory={this.state.inventory}
-          />
+          <div class="container" key={this.state.inventoryID}>
+            <Inventory 
+              key={this.state.responseToPost}
+              // resp={this.state.responseToPost}
+              inventory={this.state.inventory}
+            />
          </div>
          </div>
       </div>

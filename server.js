@@ -53,15 +53,22 @@ var inventory = [
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/api/hello', (req, res) => {
-  res.send({ express: 'Hello From Express' });
-});
-
-app.post('/api/world', (req, res) => {
-  console.log(req.body);
-  res.send(
+app.post('/api/search', (req, res) => {
+  console.log(
     `You are searching for: \n ${req.body.post}`,
   );
+
+  let searchString = req.body.post;
+  let results = [];
+
+  for(let i=0; i<inventory.length; i++) {
+    if(inventory[i]["id"].indexOf(searchString)!=-1) {
+      results.push(inventory[i]);
+    }
+  }
+
+  console.log( results )
+  res.send({inventory: results});
 });
 
 app.get('/api/items', (req, res) => {
@@ -73,6 +80,7 @@ app.get('/api/items', (req, res) => {
   // });
   // db.end()
   console.log('response sent to client');
+
   res.send({ inventory })
 });
 
