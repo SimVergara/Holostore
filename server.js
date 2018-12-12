@@ -53,24 +53,6 @@ var inventory = [
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/api/search', (req, res) => {
-  console.log(
-    `You are searching for: \n ${req.body.post}`,
-  );
-
-  let searchString = req.body.post;
-  let results = [];
-
-  for(let i=0; i<inventory.length; i++) {
-    if(inventory[i]["id"].indexOf(searchString)!=-1) {
-      results.push(inventory[i]);
-    }
-  }
-
-  console.log( results )
-  res.send({inventory: results});
-});
-
 app.get('/api/items', (req, res) => {
   // db.connect()
   // db.query('SELECT * from item', function (err, rows, fields) {
@@ -89,6 +71,65 @@ app.post('/api/items', (req, res) => {
   inventory.push(req.body);
   res.send({inventory});
 })
+
+app.post('/api/search', (req, res) => {
+  console.log(
+    `You are searching for: \n ${req.body.post}`,
+  );
+
+  let searchString = req.body.post;
+  
+  let results = {};
+
+  results = searchInventory(searchString, false)
+
+  console.log( results.findings )
+  res.send({inventory: results.findings});
+});
+
+app.delete('/api/items/:id', (req, res) => {
+  var id = req.params.id;
+  console.log(`you are trying to delete \n\t ${id}`);
+
+  let results = {};
+
+  results = searchInventory(id, true);
+
+  if (results.findings.length == 0){
+    //ID not found
+    res.status(400);
+    res.send('No items by that ID');
+  } else {
+    //Remove ID from inventory
+    inventory.splice(6, 1);
+    console.log(inventory);
+    res.send({inventory});
+  }
+})
+
+
+function searchInventory(searchString, tightSearch) {
+  let results = [];
+  let i;
+
+  for(i=0; i<inventory.length; i++) {
+    if (tightSearch) {
+      if(inventory[i]["id"] === searchString) {
+        results.push(inventory[i]);
+        break;
+      }
+    } else {
+      if(inventory[i]["id"].indexOf(searchString)!=-1) {
+        results.push(inventory[i]);
+      }
+    }
+  }
+
+  return {
+    findings: results, 
+    i: i
+  };
+}
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 

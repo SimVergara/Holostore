@@ -9,7 +9,7 @@ class Store extends Component {
     super(props);
     this.state = {
       response: '',
-      post: '',
+      search: '',
       responseToPost: '0',
       inventory : [{
         "name": "Loading inventory"
@@ -37,7 +37,8 @@ class Store extends Component {
   handleSubmit = async e => {
     e.preventDefault();
 
-    let searchString = JSON.stringify({ post: ( this.state.post === "" ? "[]" : JSON.parse(this.state.post) ) });
+    //if it's a blank search then replace it with an empty array 
+    let searchString = JSON.stringify({ post: ( this.state.search === "" ? "[]" : JSON.parse(this.state.search) ) });
 
     const response = await fetch('/api/search', {
       method: 'POST',
@@ -66,6 +67,25 @@ class Store extends Component {
       this.setState({ inventory: JSON.parse(body).inventory })
     } 
   }
+
+  removeItems = async e => {
+    e.preventDefault()
+    const response = await fetch('/api/items/5566',{
+      method: 'DELETE'
+    });
+    const body = await response.text();
+
+    console.log("the response from Delete")
+    console.log(body);
+
+    if (response.status === 400){
+      
+    } else if (response.status !== 200) {
+      throw Error(body.message);
+    } else {
+      this.setState({ inventory: JSON.parse(body).inventory });
+    }
+  }
   
 
   render() {
@@ -77,8 +97,8 @@ class Store extends Component {
               <strong>Holostore</strong>
               <input
                 type="text"
-                value={this.state.post}
-                onChange={e => this.setState({ post: e.target.value })}
+                value={this.state.search}
+                onChange={e => this.setState({ search: e.target.value })}
                 class="form-control"
               />
               <button class="btn btn-primary" type="submit">search</button>
@@ -95,6 +115,12 @@ class Store extends Component {
           <form onSubmit={this.addItem}>
             <p>
               <button type="submit">Add Item</button>  
+            </p> 
+          </form>
+
+          <form onSubmit={this.removeItems}>
+            <p>
+              <button type="submit">Delete Item 5566</button>  
             </p> 
           </form>
 

@@ -15,7 +15,6 @@ function Hologram(props){
 class Inventory extends Component {
 
   renderGrid(props){
-    console.log(props);
     return(
       props.inventory.map(function(item, i){
         console.log('test');
@@ -25,7 +24,7 @@ class Inventory extends Component {
             id={item.id}
             name={item.name}
             description={item.description}
-            colsize="col-sm-3"
+            colsize="col-sm-4"
           />);
       })
     );
