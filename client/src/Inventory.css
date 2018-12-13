@@ -1,11 +1,32 @@
 .InvRow{
-  background-color: #aaa;
   color: black;
-  padding-right: 13px;
-  padding-left: 13px;
+  padding-right: 1%;
+  padding-left: 1%;
   border-style: solid;
+  border-color: black;
   border-width: 5px;
   border-collapse: separate;
   border-spacing: 5px;
-  align-content: center;
+  text-align: center;
+}
+/*
+table, th, td {
+  border: 1px solid black;
+}*/
+
+h3 {
+	font-size: 15px;
+	text-align: left;
+}
+
+/*table {
+	width: 75%;
+}*/
+
+
+.row > div {
+  background-color: #aaa;
+  border: 1px solid black;
+  color: black;
+  text-align: center;
 }
