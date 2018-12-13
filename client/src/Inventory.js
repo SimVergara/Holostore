@@ -32,7 +32,7 @@ class Inventory extends Component {
   render(){
     return(
       <div>
-        <div class="row">
+        <div className="row">
           {this.renderGrid(this.props)}
         </div>
       </div>

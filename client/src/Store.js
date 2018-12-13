@@ -11,7 +11,6 @@ class Store extends Component {
       response: '',
       search: '',
       searched: false,
-      responseToPost: '0',
       inventory : [{
         "name": "Loading inventory"
       }],
@@ -85,11 +84,11 @@ class Store extends Component {
     });
     const body = await response.text();
 
-    if (response.status !==200){
+    if (response.status !==201){
      throw Error(response.body);
     } else {
       this.setState({ 
-        inventory: this.state.inventory.concat(JSON.parse(body).inventory),
+        inventory: this.state.inventory.concat(Array(JSON.parse(body).inventory)),
         newName: '',
         newDesc: '',
       })
@@ -107,14 +106,16 @@ class Store extends Component {
     console.log(body);
 
     if (response.status === 400){
-      
+      //no hologram by that ID
     } else if (response.status !== 200) {
       throw Error(body.message);
     } else {
-      this.setState({ 
-        inventory: JSON.parse(body).inventory,
+      this.setState({
         deleteID: '',
       });
+      return this.loadPage()
+        .then(res => this.setState({ inventory: JSON.parse(res).inventory }))
+        .catch(err => console.log(err));
     }
   };
   
@@ -168,7 +169,7 @@ class Store extends Component {
             </form>
           </div>
 
-          <div class="container">
+          <div className="container">
 
             <form onSubmit={this.clearSearch}>
               <p>

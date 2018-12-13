@@ -1,5 +1,7 @@
 const Holograms = require('../models').Holograms;
 
+var myInventory = [];
+
 module.exports = {
   list (req, res){
     console.log('response sent to client');
@@ -7,18 +9,20 @@ module.exports = {
     return Holograms
       .findAll()
 
-      .then((inventory) => res.status(200).send({inventory: inventory}))
+      .then((inventory) => {
+        res.status(200).send({inventory: inventory})
+      })
       .catch((error) => res.status(400).send(error));
   },
 
   new(req, res){
-    // console.log('responded to post items')
-    // inventory.push(req.body);
-    // res.send({inventory});
-
+    //create the requested resource in the database. return 201 when successful
     return Holograms
       .create(req.body)
-      .then((inventory) => res.status(201).send({inventory: Array(inventory)}))
+      .then((created) => {
+        res.status(201).send({inventory: created});
+        myInventory.push(created);
+      })
       .catch((error) => res.status(400).send(error));
   },
 
@@ -27,39 +31,61 @@ module.exports = {
       `You are searching for: \n ${req.body.post}`,
     );
 
+    console.log(myInventory)
+
     let searchString = req.body.post;
     
-    let results = {};
-
-    results = searchInventory(searchString, false)
-
-    console.log( results.findings )
-    res.send({inventory: results.findings});
+    return Holograms
+      .findAll({
+        where: {
+          id: {
+            $like: '%' + req.body.post + '%'
+          }
+        }
+      })
+      .then((inventory) => {
+        res.status(200).send({inventory: inventory});
+      })
+      .catch((error) => res.status(400).send(error));
   },
 
   remove(req, res){
     var id = req.params.id;
     console.log(`you are trying to delete \n\t ${id}`);
+    
+    return Holograms
+      .destroy({
+        where: {
+          id: id
+        }
+      })
+      .then((numDeleted) =>{
+        console.log(`${numDeleted} item(s) got deleted`)
+        if (numDeleted == 0){
+          res.status(400).send('No items by that ID');
+        } else {
+          res.status(200).send({deleted: numDeleted});
+        }
+      })
+    // let results = {};
 
-    let results = {};
+    // results = searchInventory(id, true);
 
-    results = searchInventory(id, true);
-
-    if (results.findings.length == 0){
-      //ID not found
-      res.status(400);
-      res.send('No items by that ID');
-    } else {
-      //Remove ID from inventory
-      inventory.splice(results.i, 1);
-      console.log(inventory);
-      res.send({inventory});
-    }
+    // if (results.findings.length == 0){
+    //   //ID not found
+    //   res.status(400);
+    //   res.send('No items by that ID');
+    // } else {
+    //   //Remove ID from inventory
+    //   inventory.splice(results.i, 1);
+    //   console.log(inventory);
+    //   res.send({inventory});
+    // }
   }
 };
 
 
-function searchInventory(searchString, tightSearch) {
+function searchInventory(searchString, inventory, tightSearch) {
   let results = [];
   let i;
 
