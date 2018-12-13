@@ -4,7 +4,7 @@ import './Inventory.css';
 
 function Hologram(props){
   return(
-    <div class={props.colsize}>
+    <div className={props.colsize}>
       <h3 >{props.id || "ID"}</h3>
       <h1>{props.name || "NAME"}</h1>
       <p>{props.description || "description"}</p>

@@ -35,7 +35,7 @@ class Store extends Component {
 
     this.setState({ inventory: JSON.parse(body).inventory });
     return body;
-  }
+  };
 
   clearSearch = async e => {
     e.preventDefault();
@@ -50,7 +50,7 @@ class Store extends Component {
       searched: false,
     });
     return body;
-  }
+  };
 
   handleSearch = async e => {
     e.preventDefault();
@@ -79,10 +79,8 @@ class Store extends Component {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ 
-        "id": "5566", 
         "name": this.state.newName, 
-        "description": this.state.newDesc, 
-        "timeAdded":"CURRENT_TIMESTAMP+1"
+        "description": this.state.newDesc,
       })
     });
     const body = await response.text();
@@ -91,13 +89,12 @@ class Store extends Component {
      throw Error(response.body);
     } else {
       this.setState({ 
-        inventory: JSON.parse(body).inventory,
+        inventory: this.state.inventory.concat(JSON.parse(body).inventory),
         newName: '',
         newDesc: '',
       })
-    } 
-
-  }
+    }
+  };
 
   removeItems = async e => {
     e.preventDefault()
@@ -119,7 +116,7 @@ class Store extends Component {
         deleteID: '',
       });
     }
-  }
+  };
   
 
   render() {
@@ -133,7 +130,7 @@ class Store extends Component {
                 value={this.state.search}
                 onChange={e => this.setState({ search: e.target.value })}
               />
-              <button class="btn btn-primary" type="submit">search</button>
+              <button className="btn btn-primary" type="submit">search</button>
           </form>
         </div>
         <div className="Store">
